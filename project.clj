@@ -6,7 +6,10 @@
   :eval-in :leiningen
   :plugins [[thomasa/mranderson "0.5.3"]]
   :java-source-paths ["java-src"]
-  :javac-options ["-target" "1.6" "-source" "1.6"]
+  :javac-options ~(cond
+                    (re-find #"^17." (System/getProperty "java.version"))
+                    ["-target" "1.7" "-source" "1.7"]
+                    :else ["-target" "1.6" "-source" "1.6"])
   :filespecs [{:type :bytes :path "mranderson/project.clj" :bytes ~(slurp "project.clj")}]
   :dependencies [^:inline-dep [com.cemerick/pomegranate "0.4.0"]
                  ^:inline-dep [org.clojure/tools.namespace "1.1.0"]
