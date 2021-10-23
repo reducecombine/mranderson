@@ -5,9 +5,18 @@
             [leiningen.core.main :as lein-main]
             [clojure.set :as s])
   (:import [java.io File]
-           [com.tonicsystems.jarjar Rule]
-           [mranderson.util JjPackageRemapper JjMainProcessor]
-           [com.tonicsystems.jarjar.ext_util StandaloneJarProcessor]))
+           [mranderson.util JjPackageRemapper JjMainProcessor LegacyJjPackageRemapper LegacyJjMainProcessor]))
+
+(def modern-java?
+  (not (re-find #"^1\.8\." (System/getProperty "java.version"))))
+
+(if modern-java?
+  (import '[org.pantsbuild.jarjar Rule])
+  (import '[com.tonicsystems.jarjar Rule]))
+
+(if modern-java?
+  (import '[org.pantsbuild.jarjar.util StandaloneJarProcessor])
+  (import '[com.tonicsystems.jarjar.ext_util StandaloneJarProcessor]))
 
 (defn info [& args]
   (apply lein-main/info args))
@@ -20,22 +29,22 @@
 
 (defn clojure-source-files-relative
   ([dirs excl-dir]
-     (let [excl-dirs (when excl-dir (map #(str % "/" excl-dir) dirs))]
-       (->> dirs
-            (map io/file)
-            (filter #(.exists ^File %))
-            (mapcat file-seq)
-            (remove (fn [file]
-                      (some #(.startsWith (str file) %) excl-dirs) ))
-            (filter (fn [^File file]
-                      (let [file-name (.getName file)]
-                        (and (.isFile file)
-                             (or
-                              (.endsWith file-name ".cljc")
-                              (.endsWith file-name ".cljs")
-                              (.endsWith file-name ".clj")))))))))
+   (let [excl-dirs (when excl-dir (map #(str % "/" excl-dir) dirs))]
+     (->> dirs
+          (map io/file)
+          (filter #(.exists ^File %))
+          (mapcat file-seq)
+          (remove (fn [file]
+                    (some #(.startsWith (str file) %) excl-dirs) ))
+          (filter (fn [^File file]
+                    (let [file-name (.getName file)]
+                      (and (.isFile file)
+                           (or
+                            (.endsWith file-name ".cljc")
+                            (.endsWith file-name ".cljs")
+                            (.endsWith file-name ".clj")))))))))
   ([dirs]
-     (clojure-source-files-relative dirs nil)))
+   (clojure-source-files-relative dirs nil)))
 
 (defn sym->file-name
   [sym]
@@ -112,7 +121,9 @@
   (let [java-dirs (java-class-dirs)
         name-version (clean-name-version pname pversion)
         rules (map (partial create-rule name-version) java-dirs)
-        processor (JjMainProcessor. rules false false)
+        processor (if modern-java?
+                    (JjMainProcessor. rules false false)
+                    (LegacyJjMainProcessor. rules false false))
         jar-file (io/file (str "target/class-deps.jar"))]
     (info (format "prefixing %s in target/class-deps.jar with %s" java-dirs name-version))
     (StandaloneJarProcessor/run jar-file jar-file processor)))

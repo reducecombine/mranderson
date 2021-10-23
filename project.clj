@@ -16,12 +16,12 @@
                  ^:inline-dep [org.clojure/tools.namespace "1.1.0"]
                  ^:inline-dep [me.raynes/fs "1.4.6"]
                  ^:inline-dep [rewrite-clj "1.0.682-alpha"]
-                 [com.googlecode.jarjar/jarjar "1.3"]]
+                 [org.clojure/clojure "1.10.3" :scope "provided"]
+                 [com.googlecode.jarjar/jarjar "1.3"]
+                 [org.pantsbuild/jarjar "1.7.2"]]
   :mranderson {:project-prefix "mranderson.inlined"}
-  :profiles {:dev {:dependencies [[org.clojure/clojure "1.8.0"]
-                                  [leiningen-core "2.9.1"]]}
-             :eastwood {:dependencies [[org.clojure/clojure "1.10.3"]]
-                        :plugins      [[jonase/eastwood "0.9.9"]]
+  :profiles {:dev {:dependencies [[leiningen-core "2.9.1"]]}
+             :eastwood {:plugins      [[jonase/eastwood "0.9.9"]]
                         :eastwood     {:exclude-linters [:no-ns-form-found]}}
              :mranderson-plugin {:plugins [[thomasa/mranderson ~project-version]]}
              :kaocha {:dependencies [[lambdaisland/kaocha "0.0-418"]

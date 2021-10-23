@@ -26,7 +26,7 @@ import com.tonicsystems.jarjar.asm.commons.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class JjPackageRemapper extends Remapper
+public class LegacyJjPackageRemapper extends Remapper
 {
     private static final String RESOURCE_SUFFIX = "RESOURCE";
 
@@ -51,7 +51,7 @@ public class JjPackageRemapper extends Remapper
         return wildcards;
     }
 
-    public JjPackageRemapper(List<Rule> ruleList, boolean verbose) {
+    public LegacyJjPackageRemapper(List<Rule> ruleList, boolean verbose) {
         this.verbose = verbose;
         wildcards = createWildcards(ruleList);
     }

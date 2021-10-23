@@ -26,13 +26,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class JjMainProcessor implements JarProcessor
+public class LegacyJjMainProcessor implements JarProcessor
 {
     private final boolean verbose;
     private final JarProcessorChain chain;
     private final Map<String, String> renames = new HashMap<String, String>();
 
-    public JjMainProcessor(List<PatternElement> patterns, boolean verbose, boolean skipManifest) {
+    public LegacyJjMainProcessor(List<PatternElement> patterns, boolean verbose, boolean skipManifest) {
         this.verbose = verbose;
         List<Rule> ruleList = new ArrayList<Rule>();
         for (PatternElement pattern : patterns) {
@@ -41,7 +41,7 @@ public class JjMainProcessor implements JarProcessor
             }
         }
 
-        JjPackageRemapper pr = new JjPackageRemapper(ruleList, verbose);
+        LegacyJjPackageRemapper pr = new LegacyJjPackageRemapper(ruleList, verbose);
 
         List<JarProcessor> processors = new ArrayList<JarProcessor>();
         processors.add(new JarTransformerChain(new RemappingClassTransformer[]{ new RemappingClassTransformer(pr) }));
