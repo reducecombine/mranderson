@@ -8,7 +8,7 @@
            [mranderson.util JjPackageRemapper JjMainProcessor LegacyJjPackageRemapper LegacyJjMainProcessor]))
 
 (def modern-java?
-  (not (re-find #"^1\.8\." (System/getProperty "java.version"))))
+  true)
 
 (if modern-java?
   (import '[org.pantsbuild.jarjar Rule])
