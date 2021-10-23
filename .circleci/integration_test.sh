@@ -7,11 +7,7 @@ cd "${BASH_SOURCE%/*}"
 # we're more interested in seeing how long does the task take.
 
 cd ..
-lein clean
-# Install without plugin, for bootstrapping mranderson:
-lein with-profile -user,-dev install
-# Full install:
-lein with-profile -user,-dev,+mranderson-plugin,+plugin.mranderson/config install
+make install
 git submodule update --init --recursive
 
 cd .circleci/cider-nrepl
